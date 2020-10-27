@@ -2,11 +2,18 @@
 <div>
   <h2 class="title is-6">{{ title }}</h2>
 
-  <q-circular-progress show-value class="text-white q-ma-md" :max="max" :value="minutes" size="200px" :thickness="0.2" color="orange" center-color="grey-8" track-color="transparent">
+  <q-circular-progress show-value class="text-white q-ma-md" v-model="timeLimit" :max="timeLimit" :value="Number(minutes)" size="200px" :thickness="0.2" color="orange" center-color="grey-8" track-color="transparent">
     {{ minutes }}:{{ seconds }}
   </q-circular-progress>
+
+  <div class="q-pa-md">
+    <q-badge color="secondary"> Model: {{ timeLimit }} (0 to 25) </q-badge>
+
+    <q-slider @change="getTime" v-model="timeLimit" :min="0" :max="25" />
+  </div>
+
   <q-btn-group>
-    <q-btn id="start" @click="startTimer" :disable="disabled">
+    <q-btn @click="startTimer" :disable="disabled">
       start
     </q-btn>
     <q-btn @click="stopTimer"> stop</q-btn>
@@ -16,20 +23,24 @@
 </template>
 
 <script>
-const TIME_LIMIT = 5;
-
 export default {
   data() {
     return {
-      max: 25,
+      timeLimit: 25,
+      totalTime: 25 * 60,
       disabled: false,
       timer: null,
-      totalTime: 25 * 60,
       resetButton: false,
       title: "Let the countdown begin!!"
     };
   },
+
   methods: {
+    getTime() {
+      this.minutes;
+      this.seconds;
+      this.totalTime = this.timeLimit * 60;
+    },
     startTimer() {
       this.timer = setInterval(() => this.countdown(), 1000);
       this.resetButton = true;
@@ -44,7 +55,7 @@ export default {
       this.disabled = false;
     },
     resetTimer() {
-      this.totalTime = 25 * 60;
+      this.totalTime = this.timeLimit * 60;
       clearInterval(this.timer);
       this.timer = null;
       this.resetButton = false;
@@ -56,6 +67,7 @@ export default {
     },
     countdown() {
       this.totalTime--;
+      console.log(this.totalTime);
     }
   },
   computed: {
